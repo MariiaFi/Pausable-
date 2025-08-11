@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title Pausable ERC20 Token
-/// @author Маша
+/// @author Mariia Fialkovska
 /// @notice ERC20 token with pause and owner-controlled mint/burn
 contract MyPausableToken is ERC20, Pausable, Ownable {
     /// @notice Constructor sets the token name and symbol
