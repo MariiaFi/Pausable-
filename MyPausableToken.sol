@@ -14,6 +14,10 @@ contract MyPausableToken is ERC20Pausable, AccessControl {
     /// @dev Role identifier for pausers
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
+    /// @dev Custom errors are cheaper than require strings
+    error NotMinter();
+    error NotPauser();
+
     /// @notice Contract constructor
     /// Grants all roles to the deployer and mints the initial supply
     constructor() ERC20("My Pausable Token", "MPT") {
@@ -31,26 +35,26 @@ contract MyPausableToken is ERC20Pausable, AccessControl {
     /// @notice Mint new tokens to a specified account
     /// @param to The address receiving the tokens
     /// @param amount The amount of tokens to mint
-    function mint(address to, uint256 amount) public {
-        require(hasRole(MINTER_ROLE, msg.sender), "Not a minter");
+    function mint(address to, uint256 amount) external {
+        if (!hasRole(MINTER_ROLE, msg.sender)) revert NotMinter();
         _mint(to, amount);
     }
 
     /// @notice Burn tokens from the caller's balance
     /// @param amount The amount of tokens to burn
-    function burn(uint256 amount) public {
+    function burn(uint256 amount) external {
         _burn(msg.sender, amount);
     }
 
     /// @notice Pause all token transfers
-    function pause() public {
-        require(hasRole(PAUSER_ROLE, msg.sender), "Not a pauser");
+    function pause() external {
+        if (!hasRole(PAUSER_ROLE, msg.sender)) revert NotPauser();
         _pause();
     }
 
     /// @notice Unpause all token transfers
-    function unpause() public {
-        require(hasRole(PAUSER_ROLE, msg.sender), "Not a pauser");
+    function unpause() external {
+        if (!hasRole(PAUSER_ROLE, msg.sender)) revert NotPauser();
         _unpause();
     }
 }
